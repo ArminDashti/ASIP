@@ -9,6 +9,7 @@
     "db:migrate": "wrangler d1 migrations apply asip --remote"
   },
   "dependencies": {
+    "@toon-format/toon": "^4.4.0",
     "hono": "^4.9.7"
   },
   "devDependencies": {
