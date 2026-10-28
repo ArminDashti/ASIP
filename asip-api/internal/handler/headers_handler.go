@@ -5,6 +5,7 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/ArminDashti/as-ip/server/internal/clientip"
 	"github.com/ArminDashti/as-ip/server/internal/dto"
 	"github.com/gin-gonic/gin"
 )
@@ -53,7 +54,7 @@ func (h *HeadersHandler) GetHttpHeaders(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, dto.HttpHeadersResponse{
-		Ip:      c.ClientIP(),
+		Ip:      clientip.FromContext(c),
 		Headers: entries,
 	})
 }

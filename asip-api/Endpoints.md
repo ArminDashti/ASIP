@@ -31,7 +31,7 @@ Service health check.
 
 Resolve the caller's IPv4 address (from the HTTP request) to the announcing autonomous system.
 
-When no `ip` path parameter is supplied, the server uses the client IP (`ClientIP()` — respects `X-Forwarded-For` / `X-Real-IP` when behind a trusted proxy).
+When no `ip` path parameter is supplied, the server uses the client IP (`clientip.FromContext()` — prefers `CF-Connecting-IP` when present, otherwise Gin `ClientIP()` with trusted private proxies and `X-Forwarded-For` / `X-Real-IP`).
 
 **Response 200**
 

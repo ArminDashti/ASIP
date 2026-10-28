@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/ArminDashti/as-ip/server/internal/clientip"
 	"github.com/ArminDashti/as-ip/server/internal/handler"
 	"github.com/ArminDashti/as-ip/server/internal/repository"
 	"github.com/gin-gonic/gin"
@@ -48,6 +49,6 @@ func requestLogger(repo *repository.AsRepository) gin.HandlerFunc {
 		if path == "/api/v1/health" || path == "/api/v1/docs" || path == "/metrics" {
 			return
 		}
-		_ = repo.LogRequest(c.Request.Context(), c.ClientIP())
+			_ = repo.LogRequest(c.Request.Context(), clientip.FromContext(c))
 	}
 }

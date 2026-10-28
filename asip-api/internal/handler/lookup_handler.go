@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/ArminDashti/as-ip/server/internal/clientip"
 	"github.com/ArminDashti/as-ip/server/internal/service"
 	"github.com/gin-gonic/gin"
 )
@@ -19,7 +20,7 @@ func NewLookupHandler(service *service.LookupService) *LookupHandler {
 func (h *LookupHandler) GetIPInfo(c *gin.Context) {
 	ip := strings.TrimSpace(c.Param("ip"))
 	if ip == "" {
-		ip = c.ClientIP()
+		ip = clientip.FromContext(c)
 	}
 
 	response, err := h.service.GetIPInfo(c.Request.Context(), ip)
@@ -97,7 +98,7 @@ func (h *LookupHandler) LookupDns(c *gin.Context) {
 func (h *LookupHandler) GetIPWhois(c *gin.Context) {
 	ip := strings.TrimSpace(c.Param("ip"))
 	if ip == "" {
-		ip = c.ClientIP()
+		ip = clientip.FromContext(c)
 	}
 
 	response, err := h.service.GetIPWhois(c.Request.Context(), ip)
