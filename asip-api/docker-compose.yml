@@ -32,14 +32,13 @@ services:
       REPO_AS_METADATA_URL: https://github.com/ipverse/as-metadata
       REPO_AS_IP_BLOCKS_URL: https://github.com/ipverse/as-ip-blocks
       REPO_GEO_IP_BLOCKS_URL: https://github.com/ipverse/geo-ip-blocks
-      # Outbound internet via the windscribe egress 3proxy sidecar on :8778
-      # (the old mullvad-1 container no longer exists — git sync died with it).
-      HTTP_PROXY: ${HTTP_PROXY:-http://windscribe:8778}
-      HTTPS_PROXY: ${HTTPS_PROXY:-http://windscribe:8778}
-      http_proxy: ${HTTP_PROXY:-http://windscribe:8778}
-      https_proxy: ${HTTPS_PROXY:-http://windscribe:8778}
-      NO_PROXY: ${NO_PROXY:-localhost,127.0.0.1}
-      no_proxy: ${NO_PROXY:-localhost,127.0.0.1}
+      # GitHub sync egress: T3 uses openrouter-proxy in mullvad-uk netns (:8778 on t3-net).
+      HTTP_PROXY: ${HTTP_PROXY:-http://mullvad-uk:8778}
+      HTTPS_PROXY: ${HTTPS_PROXY:-http://mullvad-uk:8778}
+      http_proxy: ${HTTP_PROXY:-http://mullvad-uk:8778}
+      https_proxy: ${HTTPS_PROXY:-http://mullvad-uk:8778}
+      NO_PROXY: ${NO_PROXY:-localhost,127.0.0.1,::1}
+      no_proxy: ${NO_PROXY:-localhost,127.0.0.1,::1}
     volumes:
       - asip-data:/data
     networks:
