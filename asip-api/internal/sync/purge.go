@@ -20,6 +20,7 @@ DELETE FROM role;
 DELETE FROM category;
 DELETE FROM origin;
 DELETE FROM country;
+DELETE FROM ip_attribution;
 `)
 	if err != nil {
 		return fmt.Errorf("purge data: %w", err)

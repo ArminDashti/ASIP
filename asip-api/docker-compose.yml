@@ -3,24 +3,6 @@
 # WebUI is reached via https://asip.xaigrok.ir (HAProxy -> asip-webui:80).
 name: asip
 services:
-  postgres:
-    image: postgres:16-alpine
-    container_name: asip-pgsql
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: as_ip
-    volumes:
-      - asip-pgdata:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d as_ip"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    networks:
-      - asip-net
-
   asip-api:
     build:
       context: .
@@ -28,9 +10,6 @@ services:
     image: ${IMAGE_TAG:-asip-api:latest}
     container_name: asip-api
     restart: unless-stopped
-    depends_on:
-      postgres:
-        condition: service_healthy
     expose:
       - "${INTERNAL_PORT:-3000}"
     ports:
@@ -39,12 +18,7 @@ services:
         protocol: tcp
     environment:
       PORT: ${INTERNAL_PORT:-3000}
-      DB_HOST: postgres
-      DB_PORT: 5432
-      DB_USERNAME: postgres
-      DB_PASSWORD: postgres
-      DB_NAME: as_ip
-      DB_SSLMODE: disable
+      DB_PATH: /data/asip.sqlite
       DB_SCHEMA_PATH: /app/db/init.sql
       GIN_MODE: release
       CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:5173,https://asip.xaigrok.ir}
@@ -64,8 +38,8 @@ services:
       HTTPS_PROXY: ${HTTPS_PROXY:-http://windscribe:8778}
       http_proxy: ${HTTP_PROXY:-http://windscribe:8778}
       https_proxy: ${HTTPS_PROXY:-http://windscribe:8778}
-      NO_PROXY: ${NO_PROXY:-localhost,127.0.0.1,postgres,asip-pgsql}
-      no_proxy: ${NO_PROXY:-localhost,127.0.0.1,postgres,asip-pgsql}
+      NO_PROXY: ${NO_PROXY:-localhost,127.0.0.1}
+      no_proxy: ${NO_PROXY:-localhost,127.0.0.1}
     volumes:
       - asip-data:/data
     networks:
@@ -104,4 +78,3 @@ networks:
 
 volumes:
   asip-data:
-  asip-pgdata:

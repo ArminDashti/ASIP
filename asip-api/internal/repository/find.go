@@ -22,7 +22,7 @@ func (r *AsRepository) FindCountryByIP(ctx context.Context, ip string) (countryC
 SELECT c.country_code, c.country
 FROM country_ipv4 p
 JOIN country c ON c.id = p.country_id
-WHERE $1 >= p.start_ip AND $2 <= p.end_ip
+WHERE ? >= p.start_ip AND ? <= p.end_ip
 ORDER BY (p.end_ip - p.start_ip) ASC
 LIMIT 1
 `
@@ -56,7 +56,7 @@ WHERE EXISTS (
     SELECT 1
     FROM asn_ipv4 p
     WHERE p.asn_id = a.id
-      AND $1 >= p.start_ip AND $2 <= p.end_ip
+      AND ? >= p.start_ip AND ? <= p.end_ip
 )
 ORDER BY s.largest_prefix IS NULL, s.largest_prefix DESC, a.asn ASC
 LIMIT 1
@@ -66,7 +66,7 @@ LIMIT 1
 }
 
 func (r *AsRepository) FindByAsnNumber(ctx context.Context, asnNumber int) (model.AsRecord, error) {
-	query := asRecordSelect + `WHERE a.asn = $1 LIMIT 1`
+	query := asRecordSelect + `WHERE a.asn = ? LIMIT 1`
 	return r.scanSingle(ctx, query, asnNumber)
 }
 
@@ -87,7 +87,7 @@ func (r *AsRepository) FindByAsIdentifier(ctx context.Context, asIdentifier stri
 	}
 
 	query := asRecordSelect + `
-WHERE LOWER(a."as") LIKE LOWER('%' || $1 || '%')
+WHERE LOWER(a."as") LIKE LOWER('%' || ? || '%')
 ORDER BY a.asn ASC
 LIMIT 1
 `
@@ -105,7 +105,7 @@ func (r *AsRepository) FindByAsnIdentifier(ctx context.Context, asnIdentifier st
 	}
 
 	query := asRecordSelect + `
-WHERE LOWER(a."as") LIKE LOWER('%' || $1 || '%')
+WHERE LOWER(a."as") LIKE LOWER('%' || ? || '%')
 ORDER BY a.asn ASC
 LIMIT 1
 `
@@ -114,7 +114,7 @@ LIMIT 1
 
 func (r *AsRepository) ListByCountry(ctx context.Context, countryCode string) ([]model.AsRecord, error) {
 	query := asRecordSelect + `
-WHERE LOWER(c.country_code) = LOWER($1)
+WHERE LOWER(c.country_code) = LOWER(?)
 ORDER BY a.asn ASC
 `
 	return r.scanMany(ctx, query, countryCode)

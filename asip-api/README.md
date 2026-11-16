@@ -1,11 +1,11 @@
 # AS-IP Server (Go + Gin)
 
-HTTP API for IP, ASN, and Autonomous System geolocation lookups backed by PostgreSQL.
+HTTP API for IP, ASN, and Autonomous System geolocation lookups backed by SQLite.
 
 ## Requirements
 
 - Go 1.22+
-- PostgreSQL 16+ (or Docker)
+- SQLite (file DB, created automatically on first run)
 
 ## Quick start with Docker
 
@@ -28,20 +28,13 @@ Default when unset: `http://localhost:5173`. Implemented with [`gin-contrib/cors
 
 ## Local development
 
-1. Start PostgreSQL and apply the schema:
-
-```bash
-psql -U postgres -c "CREATE DATABASE as_ip;"
-psql -U postgres -d as_ip -f db/init.sql
-```
-
-2. Copy environment variables:
+1. Copy environment variables:
 
 ```bash
 cp .env.example .env
 ```
 
-3. Run the API:
+2. Run the API (creates `data/asip.sqlite` and applies `db/init.sql` on first start):
 
 ```bash
 go run ./cmd/api
@@ -124,11 +117,11 @@ curl http://localhost:3000/api/v1/country/search/us
 server/
 ├── cmd/api/              # Application entrypoint
 ├── cmd/asip/             # CLI (status, sync)
-├── db/init.sql           # PostgreSQL schema
+├── db/init.sql           # SQLite schema
 ├── db/db.md              # Table/column reference
 ├── internal/
 │   ├── config/           # Environment configuration
-│   ├── database/         # PostgreSQL pool
+│   ├── database/         # SQLite open + schema init
 │   ├── dto/              # JSON response types
 │   ├── handler/          # HTTP handlers
 │   ├── mapper/           # Domain → DTO mapping
@@ -154,12 +147,8 @@ List and search endpoints for country wrap results in `{ "items": [...], "total"
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `PORT` | `3000` | HTTP port |
-| `DB_HOST` | `localhost` | PostgreSQL host |
-| `DB_PORT` | `5432` | PostgreSQL port |
-| `DB_USERNAME` | `postgres` | Database user |
-| `DB_PASSWORD` | `postgres` | Database password |
-| `DB_NAME` | `as_ip` | Database name |
-| `DB_SSLMODE` | `disable` | PostgreSQL SSL mode |
+| `DB_PATH` | `data/asip.sqlite` | SQLite database file |
+| `DB_SCHEMA_PATH` | `db/init.sql` | Schema applied when the DB is empty |
 | `GIN_MODE` | `debug` | Gin mode (`debug` or `release`) |
 | `SYNC_ENABLED` | `true` | Enable background data sync |
 | `SYNC_ON_STARTUP` | `false` | Run sync immediately when API starts |

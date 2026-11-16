@@ -10,19 +10,8 @@ import (
 )
 
 type DBConfig struct {
-	Host     string
-	Port     int
-	Username string
-	Password string
-	Database string
-	SSLMode  string
-}
-
-func (c DBConfig) DSN() string {
-	return fmt.Sprintf(
-		"host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
-		c.Host, c.Port, c.Username, c.Password, c.Database, c.SSLMode,
-	)
+	Path       string
+	SchemaPath string
 }
 
 type Config struct {
@@ -67,20 +56,11 @@ func Load() (*Config, error) {
 		return nil, fmt.Errorf("SYNC_INTERVAL_DAYS must be at least 1")
 	}
 
-	dbPort, err := strconv.Atoi(getEnv("DB_PORT", "5432"))
-	if err != nil {
-		return nil, fmt.Errorf("invalid DB_PORT: %w", err)
-	}
-
 	return &Config{
 		Port: port,
 		DB: DBConfig{
-			Host:     getEnv("DB_HOST", "localhost"),
-			Port:     dbPort,
-			Username: getEnv("DB_USERNAME", "postgres"),
-			Password: getEnv("DB_PASSWORD", "postgres"),
-			Database: getEnv("DB_NAME", "as_ip"),
-			SSLMode:  getEnv("DB_SSLMODE", "disable"),
+			Path:       getEnv("DB_PATH", "data/asip.sqlite"),
+			SchemaPath: getEnv("DB_SCHEMA_PATH", "db/init.sql"),
 		},
 		GinMode:            getEnv("GIN_MODE", "debug"),
 		CORSAllowedOrigins: parseCSVOrigins(getEnv("CORS_ALLOWED_ORIGINS", "http://localhost:5173")),

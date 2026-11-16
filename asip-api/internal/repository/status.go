@@ -23,7 +23,7 @@ func (r *AsRepository) GetStatus(ctx context.Context) (Status, error) {
 
 	err = r.db.QueryRowContext(ctx, `
 		SELECT COUNT(*) FROM api_request
-		WHERE request_at::date = CURRENT_DATE
+		WHERE date(request_at) = date('now')
 	`).Scan(&status.RequestsToday)
 	if err != nil {
 		return status, err
@@ -31,7 +31,7 @@ func (r *AsRepository) GetStatus(ctx context.Context) (Status, error) {
 
 	err = r.db.QueryRowContext(ctx, `
 		SELECT COUNT(*) FROM api_request
-		WHERE request_at::date = CURRENT_DATE - INTERVAL '1 day'
+		WHERE date(request_at) = date('now', '-1 day')
 	`).Scan(&status.RequestsYesterday)
 	if err != nil {
 		return status, err
@@ -58,7 +58,7 @@ func (r *AsRepository) GetLastSync(ctx context.Context) (*time.Time, error) {
 
 func (r *AsRepository) SetLastSync(ctx context.Context, syncedAt time.Time) error {
 	_, err := r.db.ExecContext(ctx, `
-		INSERT INTO sync_state (id, last_sync_at) VALUES (1, $1)
+		INSERT INTO sync_state (id, last_sync_at) VALUES (1, ?)
 		ON CONFLICT(id) DO UPDATE SET last_sync_at = excluded.last_sync_at
 	`, syncedAt.UTC())
 	return err

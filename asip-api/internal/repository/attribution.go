@@ -22,7 +22,7 @@ func (r *AsRepository) FindAttribution(ctx context.Context, ip string) (model.Ip
 	err := r.db.QueryRowContext(ctx, `
 SELECT ip, asn, as_name, country_code, country, source, resolved_at
 FROM ip_attribution
-WHERE ip = $1
+WHERE ip = ?
 `, ip).Scan(&attribution.Ip, &asn, &asName, &countryCode, &country, &source, &resolvedAt)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -54,7 +54,7 @@ func (r *AsRepository) UpsertAttribution(ctx context.Context, attribution model.
 
 	_, err := r.db.ExecContext(ctx, `
 INSERT INTO ip_attribution (ip, asn, as_name, country_code, country, source, resolved_at)
-VALUES ($1, $2, $3, $4, $5, $6, $7)
+VALUES (?, ?, ?, ?, ?, ?, ?)
 ON CONFLICT (ip) DO UPDATE SET
     asn          = EXCLUDED.asn,
     as_name      = EXCLUDED.as_name,
@@ -74,7 +74,7 @@ ON CONFLICT (ip) DO UPDATE SET
 // knows it. Used to name an ASN that was discovered outside the dataset.
 func (r *AsRepository) FindAsnName(ctx context.Context, asn int) (string, error) {
 	var name sql.NullString
-	err := r.db.QueryRowContext(ctx, `SELECT "as" FROM asn WHERE asn = $1 LIMIT 1`, asn).Scan(&name)
+	err := r.db.QueryRowContext(ctx, `SELECT "as" FROM asn WHERE asn = ? LIMIT 1`, asn).Scan(&name)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return "", ErrNotFound
@@ -93,7 +93,7 @@ func (r *AsRepository) FindCountryNameByCode(ctx context.Context, code string) (
 
 	var name sql.NullString
 	err := r.db.QueryRowContext(ctx, `
-SELECT country FROM country WHERE LOWER(country_code) = LOWER($1) LIMIT 1
+SELECT country FROM country WHERE LOWER(country_code) = LOWER(?) LIMIT 1
 `, normalized).Scan(&name)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {

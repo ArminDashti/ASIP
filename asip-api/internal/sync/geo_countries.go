@@ -69,7 +69,7 @@ func ensureGeoCountries(ctx context.Context, db *sql.DB, repoPath string) error 
 
 		_, execErr := db.ExecContext(ctx, `
 INSERT INTO country (country, country_code)
-VALUES ($1, $2)
+VALUES (?, ?)
 ON CONFLICT (country_code) DO UPDATE SET country = excluded.country
 `, name, strings.ToUpper(code))
 		if execErr != nil {

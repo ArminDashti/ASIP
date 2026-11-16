@@ -6,7 +6,7 @@ import (
 
 func (r *AsRepository) LoadPrefixes(ctx context.Context, asnID int) ([]string, error) {
 	rows, err := r.db.QueryContext(ctx, `
-SELECT cidr FROM asn_ipv4 WHERE asn_id = $1 ORDER BY cidr
+SELECT cidr FROM asn_ipv4 WHERE asn_id = ? ORDER BY cidr
 `, asnID)
 	if err != nil {
 		return nil, err

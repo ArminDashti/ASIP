@@ -30,13 +30,11 @@ func BulkInsert(ctx context.Context, db *sql.DB, table string, columns []string,
 		var query strings.Builder
 		args := make([]any, 0, len(chunk)*len(columns))
 		query.WriteString(fmt.Sprintf("INSERT INTO %s (%s) VALUES ", table, columnList))
-		argNum := 1
 		for i, row := range chunk {
 			if i > 0 {
 				query.WriteString(", ")
 			}
-			query.WriteString(rowPlaceholder(len(columns), argNum))
-			argNum += len(columns)
+			query.WriteString(rowPlaceholder(len(columns)))
 			args = append(args, row...)
 		}
 
@@ -48,10 +46,10 @@ func BulkInsert(ctx context.Context, db *sql.DB, table string, columns []string,
 	return nil
 }
 
-func rowPlaceholder(columnCount, startArg int) string {
+func rowPlaceholder(columnCount int) string {
 	args := make([]string, columnCount)
 	for i := range args {
-		args[i] = fmt.Sprintf("$%d", startArg+i)
+		args[i] = "?"
 	}
 	return "(" + strings.Join(args, ", ") + ")"
 }

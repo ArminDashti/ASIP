@@ -131,3 +131,15 @@ CREATE TABLE IF NOT EXISTS sync_state (
     id           INTEGER PRIMARY KEY CHECK (id = 1),
     last_sync_at TEXT
 );
+
+CREATE TABLE IF NOT EXISTS ip_attribution (
+    ip           TEXT PRIMARY KEY,
+    asn          INTEGER NOT NULL DEFAULT 0,
+    as_name      TEXT NOT NULL DEFAULT '',
+    country_code TEXT NOT NULL DEFAULT '',
+    country      TEXT NOT NULL DEFAULT '',
+    source       TEXT NOT NULL DEFAULT '',
+    resolved_at  TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_ip_attribution_resolved_at ON ip_attribution (resolved_at);

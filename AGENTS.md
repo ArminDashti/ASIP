@@ -11,6 +11,7 @@
 - API and WebUI deploy as separate Workers, so either can be updated independently.
 - IP sync uses `SYNC_INTERVAL_DAYS` (default 5): each run purges import tables then re-imports so only the latest IP set is kept.
 - Local Docker Compose project name is `asip-local`; the local API container is typically exposed on port 8174.
+- asip-api stores geolocation data in SQLite (`DB_PATH`, default `data/asip.sqlite`). Each sync purges import tables and reloads the latest IP blocks only (no dataset history).
 
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence

@@ -1,6 +1,6 @@
 # AS-IP Database Schema
 
-PostgreSQL schema for IP/ASN geolocation lookups. Applied automatically on first connection via `db/init.sql`.
+SQLite schema for IP/ASN geolocation lookups. Applied automatically on first connection via `db/init.sql`. Each IP sync replaces import tables with the latest dataset (no version history); `ip_attribution` stores one row per IP (upsert, not append).
 
 ## country
 
