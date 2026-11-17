@@ -128,7 +128,7 @@ function DnsLookupSummary({ result }: { result: DnsLookupResult }) {
 
   return (
     <div className="dns-lookup-result">
-      <dl className="ip-fields">
+      <dl className="ip-fields ip-fields--route">
         {flagClassName && (
           <div className="flag-row">
             <span className={`country-flag ${flagClassName}`} aria-hidden="true" />

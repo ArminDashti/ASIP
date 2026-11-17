@@ -36,10 +36,10 @@ export function HomePage() {
   }, [])
 
   return (
-    <div className="home">
+    <div className="home home--caller">
       {loadState.status === 'loading' && (
         <p className="status" role="status">
-          Looking up your IP…
+          Resolving your address on the public path…
         </p>
       )}
 
@@ -62,16 +62,19 @@ function CallerIpSummary({ info }: { info: IpInfo }) {
     buildCountryFlagClassNameFromCode(info.countryCode)
 
   return (
-    <dl className="ip-fields">
+  <>
+    <header className="caller-hero">
       {flagClassName && (
-        <div className="flag-row">
-          <span className={`country-flag ${flagClassName}`} aria-hidden="true" />
-        </div>
+        <span className={`country-flag caller-hero-flag ${flagClassName}`} aria-hidden="true" />
       )}
-      <div className="field">
-        <dt>IP</dt>
-        <dd>{info.ip}</dd>
-      </div>
+      <p className="caller-hero-ip" aria-label={`Your IP address is ${info.ip}`}>
+        {info.ip}
+      </p>
+      <p className="caller-hero-aside">
+        Address your traffic presents to the rest of the internet.
+      </p>
+    </header>
+    <dl className="ip-fields ip-fields--route">
       <div className="field">
         <dt>ASN</dt>
         <dd className={emptyClass(isKnownAsn(info.asn))}>{formatAsn(info.asn)}</dd>
@@ -85,5 +88,6 @@ function CallerIpSummary({ info }: { info: IpInfo }) {
         <dd className={emptyClass(isKnownText(info.country))}>{formatText(info.country)}</dd>
       </div>
     </dl>
+  </>
   )
 }
