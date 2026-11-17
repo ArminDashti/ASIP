@@ -36,7 +36,7 @@ export function IpPage() {
     <div className="home">
       <form className="ip-lookup-form" onSubmit={handleLookup}>
         <label className="ip-lookup-label" htmlFor="ip-address">
-          IP address
+          Address to trace
         </label>
         <div className="ip-lookup-row">
           <input
@@ -86,7 +86,7 @@ function LookedUpIpSummary({ info }: { info: IpInfo }) {
     buildCountryFlagClassNameFromCode(info.countryCode)
 
   return (
-    <dl className="ip-fields">
+    <dl className="ip-fields ip-fields--route">
       {flagClassName && (
         <div className="flag-row">
           <span className={`country-flag ${flagClassName}`} aria-hidden="true" />

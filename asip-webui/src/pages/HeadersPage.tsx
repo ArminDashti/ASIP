@@ -55,7 +55,7 @@ export function HeadersPage() {
 function HeadersSummary({ result }: { result: HttpHeadersResult }) {
   return (
     <div className="dns-lookup-result">
-      <dl className="ip-fields">
+      <dl className="ip-fields ip-fields--route">
         <div className="field">
           <dt>IP</dt>
           <dd>{result.ip || '—'}</dd>

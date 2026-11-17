@@ -96,7 +96,8 @@ export function AppShell({ children }: { children: ReactNode }) {
     <div className="app-shell">
       <header className="site-header">
         <a className="site-logo" href={withBase('/')}>
-          ASIP
+          <span className="site-logo-mark">ASIP</span>
+          <span className="site-logo-note">What the path sees</span>
         </a>
         <nav className="site-nav" aria-label="Primary">
           {NAV_ITEMS.map((item) => {

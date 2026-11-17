@@ -148,7 +148,7 @@ function DnsLeakSummary({
 
   return (
     <div className="dns-lookup-result">
-      <dl className="ip-fields">
+      <dl className="ip-fields ip-fields--route">
         <div className="field">
           <dt>Caller IP</dt>
           <dd>{displayOrDash(callerIp)}</dd>
